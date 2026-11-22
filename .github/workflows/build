@@ -3,7 +3,9 @@ name: DNSphere Portable Build
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+
   workflow_dispatch:
 
 permissions:
@@ -11,32 +13,49 @@ permissions:
 
 jobs:
   build:
-    name: Build DNSphere Portable
+    name: Build DNSphere
     runs-on: windows-latest
 
     steps:
+      # Get source code
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup .NET 8
+      # Install .NET 8 SDK
+      - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '8.0.x'
 
+      # Restore NuGet packages
       - name: Restore
         run: dotnet restore DNSphere.csproj
 
-      - name: Publish Portable
+      # Publish portable application
+      - name: Publish
         run: >
           dotnet publish DNSphere.csproj
-          -c Release
-          -r win-x64
+          --configuration Release
+          --runtime win-x64
           --self-contained true
           -p:PublishSingleFile=false
           -p:DebugType=None
           -p:DebugSymbols=false
-          -o ./publish
+          -p:PublishTrimmed=false
+          --output ./publish
 
+      # Verify executable and DLL output
+      - name: Verify Output
+        shell: pwsh
+        run: |
+          if (!(Test-Path "./publish/DNSphere.exe")) {
+              throw "DNSphere.exe was not generated!"
+          }
+
+          Get-ChildItem "./publish" -File |
+              Select-Object Name, Length
+
+      # Create portable ZIP
       - name: Create ZIP
         shell: pwsh
         run: |
@@ -46,9 +65,11 @@ jobs:
             -CompressionLevel Optimal `
             -Force
 
-      - name: Upload ZIP
+      # Upload downloadable artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v7
         with:
           name: DNSphere-Portable-win-x64
           path: DNSphere-Portable-win-x64.zip
           retention-days: 30
+          if-no-files-found: error
