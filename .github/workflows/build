@@ -17,34 +17,36 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Get source code
-      - name: Checkout
-        uses: actions/checkout@v7
 
-      # Install .NET 8 SDK
+      # 1. Checkout source code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Setup .NET 8 SDK
       - name: Setup .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # Restore NuGet packages
-      - name: Restore
+      # 3. Restore NuGet dependencies
+      - name: Restore Dependencies
         run: dotnet restore DnsChanger.csproj
 
-      # Publish portable application
-      - name: Publish
+      # 4. Publish Portable Application
+      - name: Publish DNSphere
         run: >
-          dotnet publish DNSphere.csproj
+          dotnet publish DnsChanger.csproj
           --configuration Release
           --runtime win-x64
           --self-contained true
+          -p:AssemblyName=DNSphere
           -p:PublishSingleFile=false
+          -p:PublishTrimmed=false
           -p:DebugType=None
           -p:DebugSymbols=false
-          -p:PublishTrimmed=false
           --output ./publish
 
-      # Verify executable and DLL output
+      # 5. Verify Build Output
       - name: Verify Output
         shell: pwsh
         run: |
@@ -52,11 +54,14 @@ jobs:
               throw "DNSphere.exe was not generated!"
           }
 
-          Get-ChildItem "./publish" -File |
-              Select-Object Name, Length
+          Write-Host "DNSphere build completed successfully."
 
-      # Create portable ZIP
-      - name: Create ZIP
+          Get-ChildItem "./publish" -File |
+              Select-Object Name, Length |
+              Format-Table -AutoSize
+
+      # 6. Create Portable ZIP
+      - name: Create Portable ZIP
         shell: pwsh
         run: |
           Compress-Archive `
@@ -65,9 +70,9 @@ jobs:
             -CompressionLevel Optimal `
             -Force
 
-      # Upload downloadable artifact
+      # 7. Upload Build Artifact
       - name: Upload Artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: DNSphere-Portable-win-x64
           path: DNSphere-Portable-win-x64.zip
