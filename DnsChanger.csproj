@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>DnsChanger</RootNamespace>
+    <AssemblyName>DnsChanger</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+  </PropertyGroup>
+
+  <!-- فایل‌های فونت Yekan Bakh (.ttf / .otf) را داخل پوشه‌ی Fonts کنار csproj بگذارید؛
+       داخل خود exe جاسازی می‌شوند و نیازی به نصب فونت روی سیستم نیست -->
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\*.ttf" />
+    <EmbeddedResource Include="Fonts\*.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- کتابخانه‌ی کاملا رایگان و متن‌باز (MIT) برای ظاهر مدرن Material -->
+    <PackageReference Include="ReaLTaiizor" Version="3.8.2.1" />
+  </ItemGroup>
+
+</Project>

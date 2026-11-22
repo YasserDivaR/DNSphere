@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>DNSphere</RootNamespace>
+    <AssemblyName>DNSphere</AssemblyName>
+    <Product>DNSphere</Product>
+    <AssemblyTitle>DNSphere</AssemblyTitle>
+    <Version>1.0.0</Version>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+  </PropertyGroup>
+
+  <!-- فایل فونت Vazirmatn (مثلا Vazirmatn-Regular.ttf) را کنار csproj بگذارید تا کنار exe کپی شود
+       (یا داخل پوشه‌ی Fonts تا داخل exe جاسازی شود). اگر روی سیستم کاربر نصب نباشد، برنامه خودش نصبش می‌کند -->
+  <ItemGroup>
+    <None Update="Vazirmatn*.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Vazirmatn*.otf" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Fonts\*.ttf" />
+    <EmbeddedResource Include="Fonts\*.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- کتابخانه‌ی کاملا رایگان و متن‌باز (MIT) برای ظاهر مدرن Material -->
+    <PackageReference Include="ReaLTaiizor" Version="3.8.2.1" />
+  </ItemGroup>
+
+</Project>
